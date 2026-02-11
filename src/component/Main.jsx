@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import TemplateSelection from './TemplateSelection';
 import CVForm from './CVForm/CVForm';
+import CVPreview from './CVPreview/CVPreview';
 
 export default function Main() {
   const [view, setView] = useState('selection');

@@ -1,12 +1,16 @@
-import React from 'react'
-import Main from './component/Main'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Main from './component/Main';
+import CreateBlank from './component/CreateBlank';
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Main/>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/createblank" element={<CreateBlank />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

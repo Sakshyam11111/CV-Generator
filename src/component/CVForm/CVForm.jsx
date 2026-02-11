@@ -8,112 +8,142 @@ import SkillsAndLanguages from './SkillsAndLanguages';
 import ReferencesSection from './ReferencesSection';
 
 const tabComponents = [
-    PersonalInfo,
-    ProfessionalSummary,
-    ExperienceSection,
-    EducationSection,
-    SkillsAndLanguages,
-    ReferencesSection,
+  PersonalInfo,
+  ProfessionalSummary,
+  ExperienceSection,
+  EducationSection,
+  SkillsAndLanguages,
+  ReferencesSection,
 ];
 
 export default function CVForm({ template, onSubmit, onBack }) {
-    const [data, setData] = useState({
-        name: "", title: "", email: "", phone: "", address: "", website: "",
-        summary: "",
-        experience: [{ company: "", position: "", startDate: "", endDate: "", description: "" }],
-        education: [{ institution: "", degree: "", startDate: "", endDate: "", description: "" }],
-        skills: [""],
-        languages: [""],
-        references: [{ name: "", company: "", phone: "", email: "" }],
+  const [data, setData] = useState({
+    name: "",
+    title: "",
+    email: "",
+    phone: "",
+    address: "",
+    website: "",
+    summary: "",
+    experience: [{ company: "", position: "", startDate: "", endDate: "", description: "" }],
+    education: [{ institution: "", degree: "", startDate: "", endDate: "", description: "" }],
+    skills: [""],
+    languages: [""],
+    references: [{ name: "", company: "", phone: "", email: "" }],
+  });
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const update = (field, value) => setData(prev => ({ ...prev, [field]: value }));
+
+  const updateNested = (field, index, subfield, value) =>
+    setData(prev => {
+      const arr = [...prev[field]];
+      arr[index] = { ...arr[index], [subfield]: value };
+      return { ...prev, [field]: arr };
     });
-    const [activeTab, setActiveTab] = useState(0);
 
-    const update = (field, value) => setData(prev => ({ ...prev, [field]: value }));
-    const updateNested = (field, index, subfield, value) =>
-        setData(prev => {
-            const arr = [...prev[field]];
-            arr[index] = { ...arr[index], [subfield]: value };
-            return { ...prev, [field]: arr };
-        });
-    const addItem = (field, empty) => setData(prev => ({ ...prev, [field]: [...prev[field], empty] }));
-    const removeItem = (field, index) => setData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
+  const addItem = (field, empty) => setData(prev => ({ ...prev, [field]: [...prev[field], empty] }));
 
-    const TabContent = tabComponents[activeTab];
+  const removeItem = (field, index) =>
+    setData(prev => ({ ...prev, [field]: prev[field].filter((_, i) => i !== index) }));
 
-    return (
-        <div style={{ minHeight: "100vh", background: "#f7f8fa", fontFamily: "DM Sans, sans-serif" }}>
-            <div style={{ background: "#fff", borderBottom: "1px solid #e5e7eb", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 56 }}>
-                <button onClick={onBack} style={{ background: "none", border: "none", cursor: "pointer", color: "#555", fontSize: 13 }}>← Back to Templates</button>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {template && <span style={{ fontSize: 12, color: "#888", background: "#f0f0f0", padding: "3px 10px", borderRadius: 20 }}>Template: {template.label}</span>}
-                </div>
-                <button onClick={() => onSubmit(data)} style={{ background: "#111", color: "#fff", border: "none", borderRadius: 7, padding: "8px 20px", fontSize: 13, cursor: "pointer", fontWeight: 600 }}>Preview CV →</button>
-            </div>
+  const TabContent = tabComponents[activeTab];
 
-            <div style={{ maxWidth: 760, margin: "32px auto", padding: "0 20px" }}>
-                <h2 style={{ margin: "0 0 6px", fontFamily: "Playfair Display, serif", fontSize: 26, fontWeight: 700, letterSpacing: -0.5 }}>Fill in your details</h2>
-                <p style={{ margin: "0 0 24px", color: "#888", fontSize: 13.5 }}>Complete each section to build your professional CV.</p>
+  return (
+    <div className="min-h-screen bg-gray-50 font-['DM_Sans']">
+      <div className="bg-white border-b border-gray-200 h-14 px-6 flex items-center justify-between">
+        <button
+          onClick={onBack}
+          className="text-gray-600 text-sm hover:text-gray-900 transition-colors"
+        >
+          ← Back to Templates
+        </button>
 
-                <div style={{ display: "flex", gap: 0, borderBottom: "2px solid #e5e7eb", marginBottom: 24 }}>
-                    {TABS.map((tab, i) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(i)}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                padding: "10px 14px",
-                                fontSize: 13,
-                                fontWeight: activeTab === i ? 700 : 500,
-                                color: activeTab === i ? "#111" : "#777",
-                                borderBottom: activeTab === i ? "2px solid #111" : "2px solid transparent",
-                                marginBottom: -2,
-                                cursor: "pointer",
-                                transition: "all 0.15s"
-                            }}
-                        >
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-
-                <div style={{ background: "#fff", borderRadius: 10, padding: 24, border: "1px solid #e5e7eb" }}>
-                    <TabContent data={data} update={update} updateNested={updateNested} addItem={addItem} removeItem={removeItem} />
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
-                    <button
-                        onClick={() => setActiveTab(Math.max(0, activeTab - 1))}
-                        disabled={activeTab === 0}
-                        style={{
-                            background: "#fff",
-                            border: "1.5px solid #e5e7eb",
-                            borderRadius: 7,
-                            padding: "8px 18px",
-                            fontSize: 13,
-                            cursor: activeTab === 0 ? "default" : "pointer",
-                            color: activeTab === 0 ? "#bbb" : "#333"
-                        }}
-                    >
-                        ← Previous
-                    </button>
-                    {activeTab < TABS.length - 1 ? (
-                        <button
-                            onClick={() => setActiveTab(activeTab + 1)}
-                            style={{ background: "#111", color: "#fff", border: "none", borderRadius: 7, padding: "8px 20px", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
-                        >
-                            Next →
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => onSubmit(data)}
-                            style={{ background: "#111", color: "#fff", border: "none", borderRadius: 7, padding: "8px 20px", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
-                        >
-                            ✓ Preview CV
-                        </button>
-                    )}
-                </div>
-            </div>
+        <div className="flex items-center gap-2">
+          {template && (
+            <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+              Template: {template.label}
+            </span>
+          )}
         </div>
-    );
+
+        <button
+          onClick={() => onSubmit(data)}
+          className="bg-gray-900 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
+        >
+          Preview CV →
+        </button>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-5 py-8">
+        <h2 className="text-3xl font-bold font-['Playfair_Display'] tracking-tight mb-1.5">
+          Fill in your details
+        </h2>
+        <p className="text-gray-500 text-sm mb-8">
+          Complete each section to build your professional CV.
+        </p>
+
+        <div className="flex border-b-2 border-gray-200 mb-6">
+          {TABS.map((tab, i) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(i)}
+              className={`
+                px-4 py-2.5 text-sm font-medium transition-all
+                ${activeTab === i
+                  ? 'text-gray-900 font-bold border-b-2 border-gray-900 -mb-0.5'
+                  : 'text-gray-500 hover:text-gray-700'
+                }
+              `}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+          <TabContent
+            data={data}
+            update={update}
+            updateNested={updateNested}
+            addItem={addItem}
+            removeItem={removeItem}
+          />
+        </div>
+
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={() => setActiveTab(Math.max(0, activeTab - 1))}
+            disabled={activeTab === 0}
+            className={`
+              px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-300
+              ${activeTab === 0
+                ? 'text-gray-400 cursor-not-allowed bg-gray-50'
+                : 'text-gray-700 hover:bg-gray-50 transition-colors'
+              }
+            `}
+          >
+            ← Previous
+          </button>
+
+          {activeTab < TABS.length - 1 ? (
+            <button
+              onClick={() => setActiveTab(activeTab + 1)}
+              className="bg-gray-900 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              onClick={() => onSubmit(data)}
+              className="bg-gray-900 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-colors"
+            >
+              ✓ Preview CV
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }

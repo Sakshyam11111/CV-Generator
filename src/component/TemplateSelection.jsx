@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TEMPLATES } from '../data/constants';
 
 export default function TemplateSelection({ onSelect }) {
   const [hovered, setHovered] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <div style={{ minHeight: "100vh", background: "#f7f8fa", fontFamily: "DM Sans, sans-serif" }}>
@@ -57,7 +59,7 @@ export default function TemplateSelection({ onSelect }) {
           gap: 20
         }}>
           <div
-            onClick={() => onSelect(null)}
+            onClick={() => navigate('/createblank')}
             onMouseEnter={() => setHovered("blank")}
             onMouseLeave={() => setHovered(null)}
             style={{
@@ -89,7 +91,10 @@ export default function TemplateSelection({ onSelect }) {
               onClick={() => onSelect(t)}
               onMouseEnter={() => setHovered(t.id)}
               onMouseLeave={() => setHovered(null)}
-              style={{ cursor: "pointer" }}
+              style={{
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
             >
               <div style={{
                 aspectRatio: "3/4",
@@ -98,7 +103,6 @@ export default function TemplateSelection({ onSelect }) {
                 overflow: "hidden",
                 position: "relative",
                 boxShadow: hovered === t.id ? `0 8px 32px ${t.color}25` : "0 1px 4px rgba(0,0,0,0.06)",
-                transition: "all 0.2s ease",
                 transform: hovered === t.id ? "translateY(-4px)" : "none",
                 background: "#fff"
               }}>
@@ -116,22 +120,36 @@ export default function TemplateSelection({ onSelect }) {
 
                 {hovered === t.id && (
                   <div style={{
-                    position: "absolute", inset: 0,
+                    position: "absolute",
+                    inset: 0,
                     background: "rgba(0,0,0,0.45)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     transition: "opacity 0.2s"
                   }}>
                     <span style={{
-                      background: "#fff", color: "#111", fontWeight: 700, fontSize: 12,
-                      padding: "8px 20px", borderRadius: 20, letterSpacing: 0.5
-                    }}>USE TEMPLATE</span>
+                      background: "#fff",
+                      color: "#111",
+                      fontWeight: 700,
+                      fontSize: 12,
+                      padding: "8px 20px",
+                      borderRadius: 20,
+                      letterSpacing: 0.5
+                    }}>
+                      USE TEMPLATE
+                    </span>
                   </div>
                 )}
               </div>
 
               <div style={{ marginTop: 8, paddingLeft: 2 }}>
-                <p style={{ margin: 0, fontSize: 12.5, fontWeight: 600, color: "#111" }}>{t.label}</p>
-                <p style={{ margin: 0, fontSize: 11, color: "#888", marginTop: 1 }}>{t.name}</p>
+                <p style={{ margin: 0, fontSize: 12.5, fontWeight: 600, color: "#111" }}>
+                  {t.label}
+                </p>
+                <p style={{ margin: 0, fontSize: 11, color: "#888", marginTop: 1 }}>
+                  {t.name}
+                </p>
               </div>
             </div>
           ))}
